@@ -38,6 +38,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Base de Datos PostgreSQL (Para Render) -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
