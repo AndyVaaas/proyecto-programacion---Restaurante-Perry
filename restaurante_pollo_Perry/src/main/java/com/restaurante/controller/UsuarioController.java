@@ -2,22 +2,25 @@ package com.restaurante.controller;
 
 import com.restaurante.dto.UsuarioDTO;
 import com.restaurante.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping({"/api/usuarios", "/usuarios"})
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> listar() {
+    public ResponseEntity<List<UsuarioDTO>> listarTodos() {
         return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
@@ -27,14 +30,22 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> crear(@RequestBody UsuarioDTO dto) {
-        return ResponseEntity.ok(usuarioService.guardar(dto));
+    public ResponseEntity<?> crear(@RequestBody(required = false) UsuarioDTO dto) {
+        if (dto == null) {
+            dto = new UsuarioDTO();
+        }
+        UsuarioDTO creado = usuarioService.guardar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> actualizar(@PathVariable Integer id, @RequestBody UsuarioDTO dto) {
+    public ResponseEntity<?> actualizar(@PathVariable Integer id, @RequestBody(required = false) UsuarioDTO dto) {
+        if (dto == null) {
+            dto = new UsuarioDTO();
+        }
         dto.setIdUsuario(id);
-        return ResponseEntity.ok(usuarioService.guardar(dto));
+        UsuarioDTO actualizado = usuarioService.guardar(dto);
+        return ResponseEntity.ok(actualizado);
     }
 
     @DeleteMapping("/{id}")

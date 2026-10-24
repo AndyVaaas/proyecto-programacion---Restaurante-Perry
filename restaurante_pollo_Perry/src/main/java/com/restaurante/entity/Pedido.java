@@ -1,13 +1,12 @@
 package com.restaurante.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
 @Entity
-@Table(name = "pedidos")
+@Table(name = "pedido")
 public class Pedido {
 
     @Id
@@ -16,22 +15,37 @@ public class Pedido {
     private Integer idPedido;
 
     @ManyToOne
-    @JoinColumn(name = "id_mesa", nullable = false)
+    @JoinColumn(name = "id_mesa")
     private Mesa mesa;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @Column(name = "fecha")
-    private LocalDateTime fecha = LocalDateTime.now();
+    private String estado;
+    private Double total;
 
-    @Column(name = "total", nullable = false, precision = 10, scale = 2)
-    private BigDecimal total;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("pedido")
+    private List<DetallePedido> detalles = new ArrayList<>();
 
-    @Column(name = "estado_pedido", length = 30)
-    private String estadoPedido = "Atendido";
+    public Pedido() {}
 
-    @Column(name = "estado")
-    private Boolean estado = true;
+    public Integer getIdPedido() { return idPedido; }
+    public void setIdPedido(Integer idPedido) { this.idPedido = idPedido; }
+
+    public Mesa getMesa() { return mesa; }
+    public void setMesa(Mesa mesa) { this.mesa = mesa; }
+
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public Double getTotal() { return total; }
+    public void setTotal(Double total) { this.total = total; }
+
+    public List<DetallePedido> getDetalles() { return detalles; }
+    public void setDetalles(List<DetallePedido> detalles) { this.detalles = detalles; }
 }

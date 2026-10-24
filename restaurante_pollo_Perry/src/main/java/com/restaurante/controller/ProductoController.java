@@ -2,22 +2,25 @@ package com.restaurante.controller;
 
 import com.restaurante.dto.ProductoDTO;
 import com.restaurante.service.ProductoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/productos")
+@RequestMapping({"/api/productos", "/productos"})
+@CrossOrigin(origins = "*")
 public class ProductoController {
 
-    @Autowired
-    private ProductoService productoService;
+    private final ProductoService productoService;
+
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<ProductoDTO>> listar() {
+    public ResponseEntity<List<ProductoDTO>> listarTodos() {
         return ResponseEntity.ok(productoService.listarTodos());
     }
 
@@ -28,7 +31,7 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<ProductoDTO> crear(@RequestBody ProductoDTO dto) {
-        return ResponseEntity.ok(productoService.guardar(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoService.guardar(dto));
     }
 
     @PutMapping("/{id}")

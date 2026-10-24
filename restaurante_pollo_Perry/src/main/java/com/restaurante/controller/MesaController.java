@@ -3,14 +3,15 @@ package com.restaurante.controller;
 import com.restaurante.dto.MesaDTO;
 import com.restaurante.service.MesaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/mesas")
+@CrossOrigin(origins = "*")
 public class MesaController {
 
     @Autowired
@@ -21,19 +22,14 @@ public class MesaController {
         return ResponseEntity.ok(mesaService.listarTodas());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MesaDTO> obtenerPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(mesaService.obtenerPorId(id));
-    }
-
     @PostMapping
     public ResponseEntity<MesaDTO> crear(@RequestBody MesaDTO dto) {
-        return ResponseEntity.ok(mesaService.guardar(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mesaService.guardar(dto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<MesaDTO> actualizar(@PathVariable Integer id, @RequestBody MesaDTO dto) {
-        dto.setIdMesas(id);
+        dto.setIdMesa(id);
         return ResponseEntity.ok(mesaService.guardar(dto));
     }
 

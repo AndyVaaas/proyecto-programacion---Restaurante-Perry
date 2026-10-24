@@ -7,6 +7,7 @@ import Mesas from './pages/Mesas';
 import Productos from './pages/Productos';
 import Usuarios from './pages/Usuarios';
 import Pedidos from './pages/Pedidos';
+import Reportes from './pages/Reportes';
 import './App.css';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Link to="/productos" className="nav-link">Productos</Link>
             <Link to="/usuarios" className="nav-link">Usuarios</Link>
             <Link to="/pedidos" className="nav-link">Pedidos</Link>
+            <Link to="/reportes" className="nav-link">Reportes</Link>
           </div>
         </nav>
 
@@ -40,6 +42,7 @@ function App() {
             <Route path="/productos" element={<Productos />} />
             <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/pedidos" element={<Pedidos />} />
+            <Route path="/reportes" element={<Reportes />} />
           </Routes>
         </div>
       </div>

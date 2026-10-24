@@ -1,11 +1,8 @@
 package com.restaurante.service;
 
 import com.restaurante.dto.UsuarioDTO;
-import com.restaurante.entity.Perfil;
 import com.restaurante.entity.Usuario;
-import com.restaurante.repository.PerfilRepository;
 import com.restaurante.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +11,11 @@ import java.util.stream.Collectors;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private PerfilRepository perfilRepository;
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     public List<UsuarioDTO> listarTodos() {
         return usuarioRepository.findAll().stream()
@@ -27,19 +24,42 @@ public class UsuarioService {
     }
 
     public UsuarioDTO obtenerPorId(Integer id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        if (usuario == null) return new UsuarioDTO();
         return convertirADTO(usuario);
     }
 
     public UsuarioDTO guardar(UsuarioDTO dto) {
-        Usuario usuario = convertirAEntidad(dto);
-        Usuario guardado = usuarioRepository.save(usuario);
-        return convertirADTO(guardado);
+        try {
+            Usuario usuario = new Usuario();
+            if (dto.getIdUsuario() != null) {
+                usuario = usuarioRepository.findById(dto.getIdUsuario()).orElse(new Usuario());
+            }
+
+            usuario.setNombre(dto.getNombre() != null ? dto.getNombre() : "Usuario Nuevo");
+            usuario.setUsuario(dto.getUsuario() != null ? dto.getUsuario() : "user_" + System.currentTimeMillis());
+
+            String pass = dto.getContrasena() != null ? dto.getContrasena() : dto.getClave();
+            usuario.setContrasena(pass != null && !pass.isEmpty() ? pass : "123456");
+
+            usuario.setCorreo(dto.getCorreo() != null ? dto.getCorreo() : "correo@ejemplo.com");
+            usuario.setRol(dto.getRol() != null && !dto.getRol().isEmpty() ? dto.getRol() : "Mesero");
+            usuario.setEstado(dto.getEstado() != null && !dto.getEstado().isEmpty() ? dto.getEstado() : "Activo");
+
+            Usuario guardado = usuarioRepository.save(usuario);
+            return convertirADTO(guardado);
+        } catch (Exception e) {
+            System.err.println("======== ERROR REAL DE MYSQL ========");
+            e.printStackTrace();
+            System.err.println("=====================================");
+            throw e;
+        }
     }
 
     public void eliminar(Integer id) {
-        usuarioRepository.deleteById(id);
+        if (usuarioRepository.existsById(id)) {
+            usuarioRepository.deleteById(id);
+        }
     }
 
     private UsuarioDTO convertirADTO(Usuario usuario) {
@@ -48,29 +68,10 @@ public class UsuarioService {
         dto.setNombre(usuario.getNombre());
         dto.setUsuario(usuario.getUsuario());
         dto.setContrasena(usuario.getContrasena());
+        dto.setClave(usuario.getContrasena());
         dto.setCorreo(usuario.getCorreo());
-        if (usuario.getPerfil() != null) {
-            dto.setIdPerfil(usuario.getPerfil().getIdPerfil());
-        }
+        dto.setRol(usuario.getRol());
         dto.setEstado(usuario.getEstado());
         return dto;
-    }
-
-    private Usuario convertirAEntidad(UsuarioDTO dto) {
-        Usuario usuario = new Usuario();
-        usuario.setIdUsuario(dto.getIdUsuario());
-        usuario.setNombre(dto.getNombre());
-        usuario.setUsuario(dto.getUsuario());
-        usuario.setContrasena(dto.getContrasena());
-        usuario.setCorreo(dto.getCorreo());
-        
-        if (dto.getIdPerfil() != null) {
-            Perfil perfil = perfilRepository.findById(dto.getIdPerfil())
-                    .orElseThrow(() -> new RuntimeException("Perfil no encontrado con ID: " + dto.getIdPerfil()));
-            usuario.setPerfil(perfil);
-        }
-        
-        usuario.setEstado(dto.getEstado());
-        return usuario;
     }
 }

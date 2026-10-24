@@ -1,0 +1,15 @@
+# Dependencias de React
+**/node_modules/
+**/dist/
+**/build/
+
+# Compilación de Spring Boot
+**/target/
+**/*.class
+**/*.jar
+
+# Archivos de entorno y del sistema
+.vscode/
+.idea/
+*.log
+.DS_Store

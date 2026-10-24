@@ -1,9 +1,7 @@
 package com.restaurante.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "usuario")
 public class Usuario {
@@ -13,22 +11,36 @@ public class Usuario {
     @Column(name = "id_usuario")
     private Integer idUsuario;
 
-    @ManyToOne
-    @JoinColumn(name = "id_perfil", nullable = false)
-    private Perfil perfil;
-
-    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
-
-    @Column(name = "usuario", nullable = false, length = 50, unique = true)
     private String usuario;
 
-    @Column(name = "contrasena", nullable = false, length = 255)
+    @Column(name = "contrasena")
     private String contrasena;
 
-    @Column(name = "correo", nullable = false, length = 100)
     private String correo;
+    private String rol;
+    private String estado;
 
-    @Column(name = "estado")
-    private Boolean estado = true;
+    public Usuario() {}
+
+    public Integer getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
+
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 }
