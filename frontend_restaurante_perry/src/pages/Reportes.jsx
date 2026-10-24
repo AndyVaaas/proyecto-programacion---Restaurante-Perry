@@ -4,7 +4,8 @@ const Reportes = () => {
 
   const descargarArchivo = (tipo, endpoint, nombreArchivo) => {
     // Apunta siempre al backend en el puerto 8080
-    const url = `http://localhost:8080/api/reportes/${endpoint}/${tipo}`;
+    const BASE_URL = import.meta.env.VITE_API_URL || 'https://proyecto-restaurante-perry.onrender.com';
+    const url = `${BASE_URL}/api/reportes/${endpoint}/${tipo}`;
 
     fetch(url)
       .then((response) => {
